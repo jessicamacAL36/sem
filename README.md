@@ -2,4 +2,5 @@
 [![LICENSE](https://img.shields.io/github/license/<jessicamacAL36>/devops.svg?style=flat-square)](https://github.com/<jessicamacAL36>/devops/blob/master/LICENSE)
 [![Releases](https://img.shields.io/github/release/<jessicamacAL36>/devops/all.svg?style=flat-square)](https://github.com/<jessicamacAL36>/devops/releases)
 # DevOps
-(https://img.shields.io/github/actions/workflow/status/jessicamacAL36/sem/main.yml)
+https://img.shields.io/github/actions/workflow/status/jessicamacAL36/sem/main.yml
+https://img.shields.io/github/checks-status/jessicamacAL36/sem/main.yml
