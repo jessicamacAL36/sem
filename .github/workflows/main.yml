@@ -25,6 +25,7 @@ jobs:
       # 2. Build the Fat JAR
       # CRITICAL FIX: 'install' guarantees the app-runner.jar is finalized and available for Docker.
       - name: Build and Package with Maven
+        working-directory: ${{ github.workspace }}
         run: mvn clean install
 
       # 3. Setup Docker Network and MongoDB
