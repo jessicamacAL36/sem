@@ -1,19 +1,19 @@
-name: A workflow for my Hello World App
+name: CI/CD Build and Container Test
 
 on: 
   push:
-    branches: [ "master", "develop" ] # Triggers on pushes to these branches
+    branches: [ "feature/mongo-intergration" ] # Target your current branch for testing
 
 jobs:
   build:
     name: Build, Containerize, and Test
-    runs-on: ubuntu-latest  # Recommended to use 'latest' unless specific version is required
+    runs-on: ubuntu-latest 
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 1. Setup Java 17 for consistency
+      # 1. Setup Java 17 and Maven Cache
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -21,36 +21,33 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # 2. Build the Fat JAR (this creates the 'target' folder and the JAR)
+      # 2. Build the Fat JAR (CRITICAL FIX: Use 'install' to guarantee the artifact is ready for Docker)
       - name: Build and Package with Maven
-        run: mvn clean package 
-      
-      # 3. Setup Docker Network and MongoDB (using the name 'mongodb' as expected by App.java)
+        run: mvn clean install  # <-- FIXED COMMAND
+
+      # 3. Setup Docker Network and MongoDB
       - name: Setup Docker Network and MongoDB
         run: |
           docker network create --driver bridge se-methods
-          # Pull and run MongoDB, naming it 'mongodb' for service discovery
+          # Run MongoDB, naming it 'mongodb' for service discovery
           docker run -d --name mongodb --network se-methods mongo:latest
 
       # 4. Build the Application Docker Image
       - name: Build Application Image
-        # The image will be named 'se_methods'
-        run: docker build -t se_methods .
+        run: docker build -t devopsimage .
 
       # 5. Run the Application Image on the Network
       - name: Run Application Container
-        # Run the app on the same network; use the correct name (se_methods)
-        run: docker run --network se-methods --name devopscontainer se_methods
+        run: docker run --network se-methods --name devopscontainer devopsimage
 
       # 6. View Logs (Confirm successful execution)
       - name: View Application Logs
-        # View logs to confirm JSON output and exit code 0
         run: docker logs devopscontainer
         
-      # 7. Cleanup (Important for CI/CD environments)
-      - name: Cleanup Containers
-        if: always() # Runs even if previous steps fail
+      # 7. Cleanup (Runs regardless of success/failure)
+      - name: Cleanup Containers and Network
+        if: always() 
         run: |
-          docker stop mongodb devopscontainer
-          docker rm mongodb devopscontainer
-          docker network rm se-methods
+          docker stop mongodb devopscontainer || true
+          docker rm mongodb devopscontainer || true
+          docker network rm se-methods || true
