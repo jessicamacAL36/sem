@@ -9,7 +9,7 @@ public class App {
     public static void main(String[] args) {
 
         // Use try-with-resources to ensure the connection is closed.
-        try (MongoClient mongoClient = new MongoClient("localhost", 27000)) { // FIX: Initialize MongoClient here
+        try (MongoClient mongoClient = new MongoClient("mongodb", 27017)) { // FIX: Initialize MongoClient here
             // Get a database - will create when we use it
             MongoDatabase database = mongoClient.getDatabase("mydb");
             // Get a collection from the database
