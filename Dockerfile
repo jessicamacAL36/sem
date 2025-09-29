@@ -1,4 +1,4 @@
 FROM openjdk:latest
-COPY ./target/app-runner.jar /tmp  <-- UPDATED NAME
+COPY ./target/app-runner.jar /tmp
 WORKDIR /tmp
-ENTRYPOINT ["java", "-jar", "app-runner.jar"]  <-- UPDATED NAME
+ENTRYPOINT ["java", "-jar", "app-runner.jar"]
